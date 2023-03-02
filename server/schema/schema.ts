@@ -6,7 +6,9 @@ import {
   GraphQLSchema,
   GraphQLString,
 } from "graphql";
-
+import mongoose from "mongoose";
+import Author from "../models/author";
+import Book from "../models/book";
 const dummyData = [
   {
     id: "1",
@@ -111,6 +113,31 @@ const RootQuery = new GraphQLObjectType({
   }),
 });
 
+const Mutations = new GraphQLObjectType({
+  name: "Mutation",
+  fields: () => ({
+    addAuthor: {
+      type: AuthorType,
+      args: {
+        name: {
+          type: GraphQLString,
+        },
+        age: {
+          type: GraphQLInt,
+        },
+      },
+      async resolve(_, { name, age }) {
+        const author = new Author({
+          name,
+          age,
+        });
+        await author.save();
+      },
+    },
+  }),
+});
+
 export default new GraphQLSchema({
   query: RootQuery,
+  mutation: Mutations,
 });

@@ -5,11 +5,6 @@ import schema from "./schema/schema";
 
 const app = express();
 
-mongoose.connect(
-  "mongodb://ahmed:95123574@cluster0-shard-00-00.learn-graphql.mongodb.net:27017,cluster0-shard-00-01.1bxam.mongodb.net:27017,cluster0-shard-00-02.1bxam.mongodb.net:27017/?ssl=true&replicaSet=atlas-8cs3pr-shard-0&authSource=admin&retryWrites=true&w=majority"
-);
-mongoose.connection.once("open", () => console.log("connection open..."));
-
 app.use(
   "/graphql",
   graphqlHTTP({
@@ -18,7 +13,15 @@ app.use(
   })
 );
 
-const PORT: number = 9000;
-app.listen(PORT, () => {
-  console.info(`server listening on port: ${PORT}`);
-});
+mongoose
+  .connect(
+    "mongodb+srv://ahmed:95123574@cluster0.1bxam.mongodb.net/learn-graphql?retryWrites=true&w=majority"
+  )
+  .then(() => {
+    console.log("database connection established...");
+
+    const PORT: number = 9000;
+    app.listen(PORT, () => {
+      console.info(`server listening on port: ${PORT}`);
+    });
+  });
